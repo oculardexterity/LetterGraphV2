@@ -1,0 +1,403 @@
+body {
+   /*background-image: url(http://wallpaperlayer.com/img/2015/12/background-images-6206-6480-hd-wallpapers.jpg);*/
+    
+    font-family: 'Source Sans Pro', sans-serif;
+    overflow: hidden;
+    font-weight:300;
+}
+
+
+
+.blur {
+    transition: filter 1s ease-out;
+      -webkit-filter: blur(10px); /* Chrome, Opera, etc. */
+       filter: url('blur.svg#blur'); /* Older FF and others - http://jordanhollinger.com/media/blur.svg */
+       filter: blur(10px); /* Firefox 35+, eventually all */
+}
+
+.masthead {
+    font-family: monospace;
+    position: absolute;
+    overflow:hidden;
+    scroll: none;
+    padding: 10px 10px 12px 12px;
+    right:10px;
+    bottom:10px;
+    height:20px;
+    opacity:0.6;
+    //background-color: rgba(163,131,95,0.4);
+     //box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+     font-size:18px;
+     font-weight:500;
+    border-radius: 5px;
+    z-index:100;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    text-shadow: 10px 0px 18px rgba(255, 255, 255, 0.63);
+}
+
+.console {
+    transition: height 0.2s ease-out;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+
+    position: absolute;
+    overflow:hidden;
+    scroll: none;
+    padding: 10px;
+    right:10px;
+    top:10px;
+    height:20px;
+    width:400px;
+    background-color: rgba(255,255,255,0.95);
+     box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    border-radius: 3px;
+
+    #showConsole{
+        text-decoration: none;
+        position: relative;
+        color: #000;
+        &:before {
+            content: ' \25BC';
+            padding-right:20px;
+            position: relative;
+
+        }
+    }
+    &.show {
+        height: 400px;
+        #showConsole:before {
+            content: ' \25B2';
+
+        }
+    }
+}
+
+
+
+#graphContainer {
+    //background-image: url(http://www.wonderbabiesco.org/UserFiles/Image/network%20graph%2012[1]_14_09.jpg);
+    
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+
+    transition: all 0.1s ease-out;
+        
+}
+
+.letterContainerHolder {
+    background-color: #F00;
+}
+
+.closeLetter {
+    display: none;
+    position:fixed;
+    top:0;
+    left:0;
+    height: 100%;
+    width: 100%;
+    //background-color: rgba(150,150,150,0.1);
+    background-color: rgba(102,153,153,0.4);
+    z-index: 1;
+
+}
+
+.sent, .received {
+
+    position: absolute;
+    min-width: 120px;
+    max-width: 150px;
+    border-radius: 50%;
+    left: 200px;
+    z-index: 8;
+    padding: 0 10px;
+    background-color: rgba(163,54,67,0.85);
+
+    .inner {
+        position: relative;
+        
+        font-size: 16px;
+        text-align: center;
+        
+
+    }
+}
+
+.sent {
+    
+    border: 1px solid #A33643;
+        .arrow {
+            
+            top: 50%;
+            border: solid transparent;
+            content: "";
+            height: 0;
+        
+            position: absolute;
+            pointer-events: none;
+           
+            background-color: #A33643;
+            z-index:4;
+           
+        }
+
+    &:hover {
+        background-color: rgba(163, 54, 67, 0.6);
+
+    }
+
+   
+}
+
+.received {
+
+    border: 1px solid #A33643;
+     .arrow {
+       
+        top: 50%;
+        border: solid transparent;
+        content: "";
+        height: 0;
+  
+        position: absolute;
+        pointer-events: none;
+
+        background-color: rgba(102,153,153,0.98);
+    }
+    &:hover {
+        background-color: rgba(163, 54, 67, 0.6);
+
+    }
+}
+
+.letterContainer {
+    transition: filter 1s ease-out;
+    position:absolute;
+    border-radius: 5px;
+    background-color: rgba(102,153,153,0.98);
+    border: 1px solid rgba(102,153,153,0.98);
+    max-width: 600px;
+    padding: 40px;
+    //height: 600px;
+    overflow: scroll;
+    z-index: 2;
+
+    &:hover {
+        background-color: rgba(102,153,153,0.7);
+    }
+   
+    //box-shadow: 0px 0px 50px 10px rgba(199,199,199,0.8);
+
+    h3 {
+        margin-bottom: 40px;
+        color: rgba(0,51,51,0.9);
+        font-weight:300;
+    }
+
+    &::-webkit-scrollbar {
+    display: none;
+    }
+
+}
+
+
+
+
+.letter, .postcard {
+    background-color: #FFF;
+    font-weight:400;
+    
+    padding: 20px;
+    &:not(:first-of-type){
+        margin-top: 50px;
+    }
+ 
+}
+
+
+
+.letter {
+    //border: 1px solid black;
+}
+
+.postcard {
+    border: 1px solid red;
+}
+
+.letter:before {
+    content: "LETTER";
+    background-color: #000;
+    color: #FFF;
+    position: relative;
+    top: -42px;
+    left: -21px;
+    padding:3px;
+}
+
+.postcard:before {
+    content: "POSTCARD";
+    background-color: #F00;
+    color: #FFF;
+    position: relative;
+    top: -42px;
+    left: -21px;
+    padding:3px;
+}
+
+br.hyphen:before {
+    content: "-";
+}
+
+span.sic:after {
+    content: " [sic]";
+    font-weight: bold;
+}
+
+
+span.searchHighlighted {
+    background-color: #448F30;
+}
+
+
+
+
+
+
+
+
+
+    .sigma-tooltip {
+      max-width: 240px;
+      /*max-height: 280px;*/
+      background-color: #FFF;
+      //box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      border-radius: 6px;
+
+
+    }
+
+    
+
+    .sigma-tooltip-header {
+     
+      font-size: 120%;
+      color: #666;
+          padding: 10px 10px 0px;
+    }   
+    .sigma-tooltip-header.letterTT {
+        color: rgba(0,51,51,0.9);
+        border-radius:3px;
+        //box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+
+    .sigma-tooltip-body.letterTT {
+        border-radius:3px;
+        //box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+
+    .sigma-tooltip-body {
+      padding: 10px;
+    }
+
+    .sigma-tooltip-body th {
+      color: #666;
+      text-align: left;
+    }
+
+    .sigma-tooltip-footer {
+      padding: 10px;
+      border-top: 1px solid #999;
+    }
+
+    .sigma-tooltip > .arrow {
+      border-width: 10px;
+      position: absolute;
+      display: block;
+      width: 0;
+      height: 0;
+      border-color: transparent;
+      border-style: solid;
+    }
+
+    .sigma-tooltip.top {
+      margin-top: -12px;
+    }
+    .sigma-tooltip.top > .arrow {
+      left: 50%;
+      bottom: -10px;
+      margin-left: -10px;
+      //border-top-color: #FFF;
+      border-bottom-width: 0;
+    }
+
+    .sigma-tooltip.bottom {
+      margin-top: 12px;
+    }
+    .sigma-tooltip.bottom > .arrow {
+      left: 50%;
+      top: -10px;
+      margin-left: -10px;
+      border-bottom-color: rgb(249, 247, 237);
+      border-top-width: 0;
+    }
+
+    .sigma-tooltip.left {
+      margin-left: -12px;
+    }
+    .sigma-tooltip.left > .arrow {
+      top: 50%;
+      right: -10px;
+      margin-top: -10px;
+      //border-left-color: rgb(249, 247, 237);
+      border-right-width: 0;
+    }
+
+    .sigma-tooltip.right {
+      margin-left: 12px;
+    }
+    .sigma-tooltip.right > .arrow {
+      top: 50%;
+      left: -10px;
+      margin-top: -10px;
+      border-right-color: rgba(102,153,153,0.7);
+      border-left-width: 0;
+    }
+
+    .sigma-tooltip span.hi {
+      background-color: rgba(68,143,48,0.7);
+      padding: 1px 2px 2px 2px;
+      border-radius: 3px;
+    }
+
+    .sigma-tooltip p.kwic  {
+        background-color: rgba(255,255,255,0.8);
+        padding: 5px;
+        border-radius:3px;
+        font-size: 14px;
+    }
+
+
+    .letterTT {
+        background-color: rgba(102,153,153,0.7);
+    }
+
+    .letterTT.arrow {
+        background-color: transparent;
+        border-bottom-color: rgba(102,153,153,0.7);
+        border-top-color: rgba(102,153,153,0.7);
+
+    }
