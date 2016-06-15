@@ -129,12 +129,11 @@ def build_vertices_list(graph, layout):
 			pass
 
 		# Shape of node
-
+		vertex['size'] = 1
 		vertex["data"] = {
 						"type": graph.vp["type"][v],
 						 "title": graph.vp["title"][v],
 						 "label": graph.vp["node_label"][v],
-						
 						}
 		try:
 			vertex["data"]["letterId"] = graph.vp["letterId"][v]
@@ -158,7 +157,7 @@ def build_edge_list(graph, edges_omit_list=None):
 
 def graph_to_linkurious_json(graph, layout, edges_omit_list=None):
 	json_graph = OrderedDict()
-	json_graph['vertices'] = build_vertices_list(graph, layout)
+	json_graph['nodes'] = build_vertices_list(graph, layout)
 	json_graph['edges'] = build_edge_list(graph, edges_omit_list)
 	return json.dumps(json_graph)
 

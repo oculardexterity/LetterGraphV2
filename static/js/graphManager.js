@@ -21,16 +21,7 @@ var graphManager = (function(config) {
 
 			},
 			settings: {
-			    drawLabels: true,
-			    nodesPowRatio: 0.001,
-			    rescaleIgnoreSize: true,
-			    autoResize: false,
-			    zoomMax: 3000,
-			    minNodeSize: 2,
-			    maxNodeSize: 6,
-			    maxEdgeSize: 0.4,
-			    nodeActiveLevel: 5,
-			    zoomMin: 0.01
+		
 			}
 	});
 
@@ -68,7 +59,7 @@ var graphManager = (function(config) {
 			}
 		};
 
-	var tooltipsWebgl = sigma.plugins.tooltips(sigmaWebgl, sigmaWebgl.renderers[0], tooltipConfig);
+	//var tooltipsWebgl = sigma.plugins.tooltips(sigmaWebgl, sigmaWebgl.renderers[0], tooltipConfig);
   
 	sigmaWebgl.bind('clickNode', function(e) {
         var nodeId = e.data.node.id,
@@ -106,12 +97,12 @@ var graphManager = (function(config) {
 		//console.log(data);
 
 		var g = JSON.parse(data);
-		console.log(g);
+
 
 		var nodeIds = getCurrentNodeIds();
 		console.log(nodeIds);
 
-
+/*
 		// For some reason crashing on automatic import -- add manually
 		for (var i = 0, j = g.vertices.length; i < j; i++) {
 			
@@ -149,8 +140,11 @@ var graphManager = (function(config) {
 				sigmaWebgl.graph.addEdge(g.edges[i]);
 			}
 		}
+*/
 
-		
+sigmaWebgl.graph.read(g);
+
+
 		sigmaWebgl.refresh();
 		setCamera();
 		//bindTooltips();
@@ -160,11 +154,12 @@ var graphManager = (function(config) {
 
 
 
-	// Bind graph scrolling event to update of camera variable
+	// Bind graph scrolling event to update of camera variable 
+	/*
 	sigmaWebgl.bind('coordinatesUpdated', $.debounce(300, function() {
 			router.url.setVar('camera', graph.camera.x + ',' + graph.camera.y + ',' + graph.camera.ratio);
 		})
-	);
+	);*/
 
 	// Set camera position from URL
 	function setCamera() {
