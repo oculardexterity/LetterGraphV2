@@ -99,20 +99,28 @@ var graphManager = (function(config) {
 
 
 
-  /// REWRITE THIS TO USE A TOOLTIP BUTTON INSTEAD OF THE NODE ITSELF!!!
+
 	sigmaWebgl.bind('clickNode', function(e) {
 			
 				if (isPressed) {
-					//console.log(isPressed);
-			
-		
+					var nodeId = e.data.node.id;
+	        highlightNode(nodeId);
 
-	        var nodeId = e.data.node.id,
-	            toKeep = sigmaWebgl.graph.neighbors(nodeId);
+	      }
+	      
+  });
 
-	        router.url.setVar('selectedNode', nodeId);
+  function highlightNode(nodeId) {
 
-	        toKeep[nodeId] = e.data.node;
+  				router.url.setVar('selectedNode', nodeId);
+
+  				// Looks up all the adjacent nodes to node with id=nodeId
+	        var toKeep = sigmaWebgl.graph.neighbors(nodeId);
+	        
+	        
+	        // Adds nodeId data to toKeep list
+	        toKeep[nodeId] = sigmaWebgl.graph.nodes(nodeId);
+	        
 
 	        sigmaWebgl.graph.nodes().forEach(function(n) {
 	          if (toKeep[n.id])
@@ -133,10 +141,7 @@ var graphManager = (function(config) {
 	        // call the refresh method to make the colors
 	        // update effective.
 	        sigmaWebgl.refresh();
-
-	      }
-	      
-  });
+  }
 
 		sigmaWebgl.bind('clickStage', function(e) {
 				if (isPressed) {
@@ -213,15 +218,16 @@ var graphManager = (function(config) {
 		}
 
 
-//sigmaWebgl.graph.read(g);
+		
 
-
+		// Fire off all the graph options on data complete
 		sigmaWebgl.refresh();
 		bindTooltips();
-		
-	
-		
 		setCamera();
+
+		if ('selectedNode' in router.url.vars) {
+			highlightNode(router.url.getVar('selectedNode'));
+		}
 	
 
 		
