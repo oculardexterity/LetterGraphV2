@@ -1,11 +1,16 @@
 	
+var graphLoaded = false;
 
-
+//var cameraEvent = $.debounce(500, function() {
+//	if (graphLoaded) {
+//		router.url.setVar('camera', graph.camera.x + ',' + graph.camera.y + ',' + graph.camera.ratio);
+//	}
+//});
 
 var graphManager = (function(config) {
 	var return_data;
 
-	console.log(config);
+	//console.log(config);
 	
 	var container = document.getElementById(config.container);
 	
@@ -21,9 +26,24 @@ var graphManager = (function(config) {
 
 			},
 			settings: {
-		
+					drawLabels: true,
+			    nodesPowRatio: 0.001,
+			    rescaleIgnoreSize: false,
+			    autoResize: false,
+			    zoomMax: 3000,
+			    minNodeSize: 5,
+			    maxNodeSize: 6,
+			    maxEdgeSize: 1,
+			   // nodeActiveLevel: 5,
+			    zoomMin: 0.01,
+
 			}
 	});
+
+	var camera = sigmaWebgl.camera;
+
+
+
 
 
 	var tooltipConfig = {
@@ -39,7 +59,7 @@ var graphManager = (function(config) {
 		        	//node.degree = this.degree(node.id);
 		      
 		        	//console.log(node, 'hi')
-
+		        	if (!isPressed) {
 				    if (node.data.type === 'Letter') {
 			        // Returns an HTML string:
 			     		//console.log(node.data.search_kwic);
@@ -51,7 +71,7 @@ var graphManager = (function(config) {
 		      		else {
 		        		return Mustache.render(personLabelTemplate(), node)
 		        	}
-
+			}
 		        	// Returns a DOM Element:
 		        	//var el = document.createElement('div');
 		        	//return el.innerHTML = Mustache.render(template, node);
@@ -59,69 +79,120 @@ var graphManager = (function(config) {
 			}
 		};
 
-	//var tooltipsWebgl = sigma.plugins.tooltips(sigmaWebgl, sigmaWebgl.renderers[0], tooltipConfig);
+	var tooltipsWebgl = sigma.plugins.tooltips(sigmaWebgl, sigmaWebgl.renderers[0], tooltipConfig);
   
+	var isPressed;
+	$(document).keydown(function(e) {
+			 	
+			 	//console.log(e);
+		      if (e.which == 91 || e.metaKey || e.ctrlKey || e.metaKey) {
+		      	//console.log('pressed');
+		      	isPressed = true;
+		      	//console.log(isPressed);
+		      }
+		    });
+
+			 $(document).keyup(function(e) {
+			 	isPressed = false;
+			 	//console.log(isPressed);
+			 });
+
+
+
+  /// REWRITE THIS TO USE A TOOLTIP BUTTON INSTEAD OF THE NODE ITSELF!!!
 	sigmaWebgl.bind('clickNode', function(e) {
-        var nodeId = e.data.node.id,
-            toKeep = sigmaWebgl.graph.neighbors(nodeId);
+			
+				if (isPressed) {
+					//console.log(isPressed);
+			
+		
 
-        toKeep[nodeId] = e.data.node;
+	        var nodeId = e.data.node.id,
+	            toKeep = sigmaWebgl.graph.neighbors(nodeId);
 
-        sigmaWebgl.graph.nodes().forEach(function(n) {
-          if (toKeep[n.id])
-            n.color = n.originalColor;
-          else
-            n.color = '#eee';
-        });
+	        router.url.setVar('selectedNode', nodeId);
 
-        sigmaWebgl.graph.edges().forEach(function(e) {
-          if (toKeep[e.source] && toKeep[e.target])
-            e.color = e.originalColor;
-          else
-            e.color = '#eee';
-        });
+	        toKeep[nodeId] = e.data.node;
 
-        // Since the data has been modified, we need to
-        // call the refresh method to make the colors
-        // update effective.
-        sigmaWebgl.refresh();
+	        sigmaWebgl.graph.nodes().forEach(function(n) {
+	          if (toKeep[n.id])
+	            n.color = n.originalColor;
+	          else
+
+	            n.color = n.lighten_color || '#eee';
+	        });
+
+	        sigmaWebgl.graph.edges().forEach(function(e) {
+	          if (toKeep[e.source] && toKeep[e.target])
+	            e.color = e.originalColor;
+	          else
+	            e.color = '#eee';
+	        });
+
+	        // Since the data has been modified, we need to
+	        // call the refresh method to make the colors
+	        // update effective.
+	        sigmaWebgl.refresh();
+
+	      }
+	      
+  });
+
+		sigmaWebgl.bind('clickStage', function(e) {
+				if (isPressed) {
+	        sigmaWebgl.graph.nodes().forEach(function(n) {
+	          n.color = n.originalColor;
+	        });
+
+	        sigmaWebgl.graph.edges().forEach(function(e) {
+	          e.color = e.originalColor;
+	        });
+	        router.url.removeVar('selectedNode');
+	        // Same as in the previous event:
+	        sigmaWebgl.refresh();
+	      }
       });
 
 
-	var cam = sigmaWebgl.camera;
 
-	
+	camera.bind('coordinatesUpdated', $.debounce(300, function() {
+	   		router.url.setVar('camera', camera.x + ',' + camera.y + ',' + camera.ratio);  	
+		})
+	);
+
+
 
 
 	function drawGraphWithData(data) {
 		//console.log(data);
+		
 
 		var g = JSON.parse(data);
 
 
 		var nodeIds = getCurrentNodeIds();
-		console.log(nodeIds);
+		//console.log(nodeIds);
 
-/*
+
 		// For some reason crashing on automatic import -- add manually
-		for (var i = 0, j = g.vertices.length; i < j; i++) {
+		for (var i = 0, j = g.nodes.length; i < j; i++) {
 			
-			if (sigmaWebgl.graph.nodes(g.vertices[i].id)) {
+			if (sigmaWebgl.graph.nodes(g.nodes[i].id)) {
 				
 				var existingNode = sigmaWebgl.graph.nodes(g.vertices[i].id);
-				existingNode.x = g.vertices[i].x;
-				existingNode.y = g.vertices[i].y;
+				existingNode.x = g.nodes[i].x;
+				existingNode.y = g.nodes[i].y;
 
 				// Here going to have to add in additional info:: to wit, search Kwic
 			}
 			else {
-				sigmaWebgl.graph.addNode(g.vertices[i]);
+				sigmaWebgl.graph.addNode(g.nodes[i]);
 			}
 
 
 		}
 
-		var newNodesIds = g.vertices.map(function(i) {return i.id});
+		var newNodesIds = g.nodes.map(function(i) {return i.id});
 		nodeIds = nodeIds.filter(function(el) {
 			if (newNodesIds.indexOf(el) < 0) {
 				sigmaWebgl.graph.dropNode(el);
@@ -140,39 +211,41 @@ var graphManager = (function(config) {
 				sigmaWebgl.graph.addEdge(g.edges[i]);
 			}
 		}
-*/
 
-sigmaWebgl.graph.read(g);
+
+//sigmaWebgl.graph.read(g);
 
 
 		sigmaWebgl.refresh();
+		bindTooltips();
+		
+	
+		
 		setCamera();
-		//bindTooltips();
+	
 
+		
 	}
 
 
 
 
-	// Bind graph scrolling event to update of camera variable 
-	/*
-	sigmaWebgl.bind('coordinatesUpdated', $.debounce(300, function() {
-			router.url.setVar('camera', graph.camera.x + ',' + graph.camera.y + ',' + graph.camera.ratio);
-		})
-	);*/
+
+
 
 	// Set camera position from URL
 	function setCamera() {
+		
 		if ('camera' in router.url.vars) {
 			var coords = router.url.getVar('camera').split(",");
-
-			sigma.misc.animation.camera(sigmaWebgl.camera, 
-				{ x: parseFloat(coords[0]), y: parseFloat(coords[1]), ratio: parseFloat(coords[2]) });	
+			camera.goTo({ x: parseFloat(coords[0]), y: parseFloat(coords[1]), ratio: parseFloat(coords[2]) });	
 		}
 		else {
-			sigma.misc.animation.camera(sigmaWebgl.camera, 
-				{ x:0, y: 0, ratio: 1 });	
+			camera.goTo({x: 0, y: 0, ratio: 1});
 		}
+		
+		
+		return 'set camera complete';
 	}
 
 	function getCurrentNodeIds() {
@@ -209,7 +282,7 @@ sigmaWebgl.graph.read(g);
 		tooltipsWebgl.bind('hidden', function(event) {
 		  //console.log('tooltip hidden', event);
 		});
-	
+		console.log('bindTooltips called');
 	}
 
 	return {
@@ -218,7 +291,7 @@ sigmaWebgl.graph.read(g);
 
 		// Expose the sigma instance...
 		sigma: sigmaWebgl,
-		camera: cam,
+		camera: camera,
 		setCamera: setCamera
 
 	}

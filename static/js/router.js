@@ -10,7 +10,7 @@ var routerModule = (function(graph, letter) {
 	//	graph = gr;
 	//	letter = lett;
 
-		console.log('router init called');
+		//console.log('router init called');
 		callFromUrl();
 
 
@@ -70,10 +70,10 @@ var routerModule = (function(graph, letter) {
 
 		function removeVar(vari) {
 			if (vari in urlVars) {
-				console.log('removing ' + vari)
-				console.log(urlVars);
+				//console.log('removing ' + vari)
+				//console.log(urlVars);
 				delete urlVars[vari];
-				console.log(urlVars);
+				//console.log(urlVars);
 				setBrowserUrl();
 			}
 		}
@@ -129,7 +129,7 @@ var routerModule = (function(graph, letter) {
 			if ('letter' in urlvars && Number(urlvars['letter'])) {
 				if ('searchTerm' in urlvars) {
 					var urlToGet = 'letter/' + urlvars['letter'] + '?searchTerm=' + urlvars['searchTerm']
-					console.log('searchterm for letter call: ' + urlToGet);
+					//console.log('searchterm for letter call: ' + urlToGet);
 					getData(urlToGet, letter.showLetterContent);
 					
 				}
@@ -144,7 +144,7 @@ var routerModule = (function(graph, letter) {
 		}
 		getLetter(url.vars);
 
-		graph.setCamera();
+		//graph.setCamera();
 		
 
 

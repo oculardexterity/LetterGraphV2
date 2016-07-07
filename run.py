@@ -125,11 +125,13 @@ def build_vertices_list(graph, layout):
 			pass
 		try:
 			vertex["color"] = graph.vp["color"][v]
+			vertex["originalColor"] = graph.vp["color"][v]
+			vertex["lighten_color"] = graph.vp["lighten_color"][v]
 		except KeyError:
 			pass
 
 		# Shape of node
-		vertex['size'] = 1
+		vertex['size'] = 0.5
 		vertex["data"] = {
 						"type": graph.vp["type"][v],
 						 "title": graph.vp["title"][v],

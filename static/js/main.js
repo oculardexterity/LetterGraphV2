@@ -10,7 +10,7 @@ var testingOverride = true;
 
 sigma.classes.graph.addMethod('neighbors', function(nodeId) {
 
-		console.log(this.allNeighborsIndex);
+		//console.log(this.allNeighborsIndex);
     var k,
         neighbors = {},
         index = this.allNeighborsIndex[nodeId] || {};

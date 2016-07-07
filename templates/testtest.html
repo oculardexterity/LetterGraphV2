@@ -4,7 +4,7 @@
     <title>TEST</title>
     <script src="/static/js/jquery-2.2.1.min.js"></script>
     <script type="text/javascript" src="/static/js/libraries/sigma.js/sigma.min.js"></script>
-   <!-- <script type="text/javascript" src="/static/js/libraries/linkurious.js/build/plugins.js"></script> -->
+   <script type="text/javascript" src="/static/js/libraries/linkurious.js.BACKUP/dist/plugins/sigma.plugins.tooltips.min.js"></script> 
     <!--<script src="/static/js/libraries/linkurious.js/dist/plugins/sigma.layouts.fruchtermanReingold.min.js"></script>-->
 
    
@@ -111,7 +111,7 @@ sig.addRenderer({
         var gData = JSON.parse(data);
 
         console.log(gData.nodes[0].id);
-        sig.graph.addNode(gData.nodes[0]);
+        sig.graph.read(data);
         sig.refresh();
     };
     // Finally, let's ask our sigma instance to refresh:
