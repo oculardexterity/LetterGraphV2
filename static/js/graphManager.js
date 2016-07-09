@@ -8,7 +8,18 @@ var graphLoaded = false;
 //});
 
 var graphManager = (function(config) {
+	function merge_objects(obj1,obj2){
+    var obj3 = {};
+    for (var attrname in obj1) { obj3[attrname] = obj1[attrname]; }
+    for (var attrname in obj2) { obj3[attrname] = obj2[attrname]; }
+    return obj3;
+	}
+
+
+
+
 	var return_data;
+	var highlight_to_keep = {};
 
 	//console.log(config);
 	
@@ -111,19 +122,24 @@ var graphManager = (function(config) {
   });
 
   function highlightNode(nodeId) {
-
-  				router.url.setVar('selectedNode', nodeId);
+  				if ('selectedNode' in router.url.vars) {
+	  				var currentSelectedNodes = router.url.vars['selectedNode'];
+	  				router.url.setVar('selectedNode', nodeId + ';' + currentSelectedNodes);
+	  			}
+	  			else {
+	  				router.url.setVar('selectedNode', nodeId);
+	  			}
 
   				// Looks up all the adjacent nodes to node with id=nodeId
-	        var toKeep = sigmaWebgl.graph.neighbors(nodeId);
+	        highlight_to_keep = merge_objects(sigmaWebgl.graph.neighbors(nodeId), highlight_to_keep);
 	        
 	        
 	        // Adds nodeId data to toKeep list
-	        toKeep[nodeId] = sigmaWebgl.graph.nodes(nodeId);
+	        highlight_to_keep[nodeId] = sigmaWebgl.graph.nodes(nodeId);
 	        
 
 	        sigmaWebgl.graph.nodes().forEach(function(n) {
-	          if (toKeep[n.id])
+	          if (highlight_to_keep[n.id])
 	            n.color = n.originalColor;
 	          else
 
@@ -131,7 +147,7 @@ var graphManager = (function(config) {
 	        });
 
 	        sigmaWebgl.graph.edges().forEach(function(e) {
-	          if (toKeep[e.source] && toKeep[e.target])
+	          if (highlight_to_keep[e.source] && highlight_to_keep[e.target])
 	            e.color = e.originalColor;
 	          else
 	            e.color = '#eee';
@@ -153,6 +169,7 @@ var graphManager = (function(config) {
 	          e.color = e.originalColor;
 	        });
 	        router.url.removeVar('selectedNode');
+	        highlight_to_keep = {};
 	        // Same as in the previous event:
 	        sigmaWebgl.refresh();
 	      }
@@ -226,7 +243,10 @@ var graphManager = (function(config) {
 		setCamera();
 
 		if ('selectedNode' in router.url.vars) {
-			highlightNode(router.url.getVar('selectedNode'));
+			var nodes = router.url.vars['selectedNode'].split(';');
+			for (var i = 0, j = nodes.length; i < j; i++) {
+				highlightNode(nodes[i]);
+			}
 		}
 	
 
