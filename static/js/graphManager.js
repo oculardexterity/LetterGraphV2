@@ -122,14 +122,19 @@ var graphManager = (function(config) {
   });
 
   function highlightNode(nodeId) {
-  				if ('selectedNode' in router.url.vars) {
-	  				var currentSelectedNodes = router.url.vars['selectedNode'];
-	  				router.url.setVar('selectedNode', nodeId + ';' + currentSelectedNodes);
+  				/// CHECK nodeId is not ALREADY in selectedNode!!!!
+  				
+  				if (router.url.getVar('selectedNode')) {
+	  				  var currentSelectedNodes = router.url.getVar('selectedNode');
+	  				  if (currentSelectedNodes.indexOf(nodeId) == -1) {
+			  				router.url.setVar('selectedNode',  currentSelectedNodes + ';' + nodeId);
+			  			}
 	  			}
 	  			else {
+	  				
 	  				router.url.setVar('selectedNode', nodeId);
 	  			}
-
+	  			
   				// Looks up all the adjacent nodes to node with id=nodeId
 	        highlight_to_keep = merge_objects(sigmaWebgl.graph.neighbors(nodeId), highlight_to_keep);
 	        
@@ -168,7 +173,9 @@ var graphManager = (function(config) {
 	        sigmaWebgl.graph.edges().forEach(function(e) {
 	          e.color = e.originalColor;
 	        });
+	        router.url.setVar('selectedNode', '');
 	        router.url.removeVar('selectedNode');
+	        //console.log('var after remove', router.url.vars['selectedNode']);
 	        highlight_to_keep = {};
 	        // Same as in the previous event:
 	        sigmaWebgl.refresh();
