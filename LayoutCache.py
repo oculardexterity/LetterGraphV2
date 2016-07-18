@@ -17,7 +17,7 @@ class LayoutCache:
 
 
 
-	def __getitem__(self, graph):
+	def getLayout(self, graph):
 		start = time.clock()
 		# Maybe make it possible to throw a graph or a hash to this?
 		# No idea how to do it... typecheck?? If type(str) and len(graph) == md5-hash-length??

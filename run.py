@@ -1,7 +1,6 @@
 from collections import OrderedDict
-from flask import Flask, render_template, request
 from graph_tool.all import *
-import hashlib
+#import hashlib
 import json
 import io
 import numpy
@@ -12,10 +11,20 @@ from eXistWrapper.wrapper import ExistWrapper
 from GraphUtils import join_graphs
 from LayoutCache import LayoutCache
 
+import jinja2
+
+import tornado.concurrent
+import tornado.gen
+import tornado.httpserver
+import tornado.ioloop
+import tornado.template
+import tornado.web
+
+from tornado_jinja2 import Jinja2Loader
 
 
-# Initialise app
-app = Flask(__name__)
+
+
 
 numpy.random.seed(42)
 graph_tool.seed_rng(42) 
@@ -24,88 +33,92 @@ exist = ExistWrapper(Config().existURI)
 graphData = exist.buildGraphML("buildGraphGt.xql")
 initialGraph = graph_tool.load_graph(io.StringIO(graphData), fmt='graphml')
 layoutCache = LayoutCache('graph_data/')
-print(layoutCache[initialGraph])
-
-
-@app.route("/")
-def index():
-	return render_template('testLinkurious.html')
-
-@app.route("/testgraph")
-def testgraph():
-	return render_template('testtest.html')
 
 
 
-@app.route('/ajax/letter/<int:letterId>/')
-def letterAjax(letterId):
-	try:
-		if request.args.get('searchTerm'):
-			print('getting letter with searchterm ')
-			return exist.letter(letterId, request.args.get('searchTerm'))
-		else:
-			print('getting letter without searchterm')
-			return exist.letter(letterId)
-	except:
-		return "NO LETTER OF THAT ID"
-
-
-@app.route('/ajax/defaultGraph')
-def defaultGraph():
-	start = time.clock()
-	# Need to rebuild initial graph otherwise fails to reset...
-	initialGraph = graph_tool.load_graph(io.StringIO(graphData), fmt='graphml')
-	
-	# Rewrite this caching balls --- actually plan a better plan!!!
-	# Load and cache graph -- ??
-	graph = initialGraph
-	print(request.args)
-	
-	'''	
-		Ok, so here we need some form of graph dispatch-y bugger
-
-
-	'''
-	if request.args.get('graphIncludes'):
-		includes = request.args.get('graphIncludes').split(',')
-
-		if 'repo' in includes:
-			print('repo in includes')
-
-			# Use some naming convention here::: i.e. make a script in eXist matching this name
-			# and then iterate over the `includes` list (with a try-except for missing scripts)
-			addData = exist.buildGraphML('repo' + '.xql')
-			addGraph = graph_tool.load_graph(io.StringIO(addData), fmt='graphml')
-			graph = join_graphs(graph, addGraph)
-	
-	if request.args.get('searchTerm'):
-		searchTerms = request.args.get('searchTerm').split(';')
-
-		for searchTerm in searchTerms:
-			print(searchTerm)
-
-			addData = exist.buildGraphML('searchTerm.xql?searchString=' + searchTerm)
-			addGraph = graph_tool.load_graph(io.StringIO(addData), fmt='graphml')
-			graph = join_graphs(graph, addGraph)
-	
-	#l = graph_tool.draw.sfdp_layout(g, mu=0.1, mu_p=4.0, C=0.9, init_step=1, verbose=True, pos=initial_pos(g))
-	end = time.clock()
-	print('buiding graph time', end-start)
-
-
-	return graph_to_linkurious_json(graph, layoutCache[graph])
-
-
-@app.route('/ajax/graph')
-def graph():
-	pass
-	# Build some shitting arg parser and format------!!!!
-
-
-# Graph function
 
 
 
+# Make app function; called from __main__
+def make_app():
+	jinja2_env = jinja2.Environment(loader=jinja2.FileSystemLoader('templates/'), autoescape=False)
+	jinja2_loader = Jinja2Loader(jinja2_env)
+	settings = {'template_loader': jinja2_loader,
+				'static_path': 'static/',
+				'static_url_prefix': '/static/'
+
+				}
+	return tornado.web.Application(
+    	[
+        (r"/", SinglePageAppHandler),
+        (r"/ajax/letter/(\d*)", LetterHandler),
+        (r"/ajax/defaultGraph", GraphHandler)
+    ], debug=False, **settings)
+
+
+
+
+
+class SinglePageAppHandler(tornado.web.RequestHandler):
+	def get(self):
+		self.render('testLinkurious.html')
+		
+
+
+
+
+# Get letter html from exist -- synchronous
+class LetterHandler(tornado.web.RequestHandler):
+	@tornado.gen.coroutine
+	def get(self, letterId):
+		searchTerm = self.get_argument('searchTerm', default=None)
+		try:
+			self.write(exist.letter(letterId, searchTerm))
+		except:
+			raise tornado.web.HTTPError(404)
+		self.finish()
+
+
+class GraphHandler(tornado.web.RequestHandler):
+	executor = tornado.concurrent.futures.ThreadPoolExecutor(max_workers=8)
+
+	@tornado.gen.coroutine
+	def get(self):
+
+		# Grab initial graph
+		initialGraph = graph_tool.load_graph(io.StringIO(graphData), fmt='graphml')
+		graph = initialGraph
+
+		# Add in graphincludes
+		graphIncludes = self.get_argument('graphIncludes', default=None)
+		if graphIncludes:
+			includes = graphIncludes.split('|')
+			#### Turn this into a for-loop, with appropriately named exist queries??
+			if 'repo' in includes:
+				addData = exist.buildGraphML('repo' + '.xql')
+				addGraph = graph_tool.load_graph(io.StringIO(addData), fmt='graphml')
+				graph = join_graphs(graph, addGraph)
+		
+		# Add in search terms
+		searchTerm = self.get_argument('searchTerm', default=None)
+		if searchTerm:
+			searchTerms = searchTerm.split('|')
+			for st in searchTerms:
+				print(st)
+				addData = exist.buildGraphML('searchTerm.xql?searchString=' + st)
+				addGraph = graph_tool.load_graph(io.StringIO(addData), fmt='graphml')
+				graph = join_graphs(graph, addGraph)
+
+
+		
+
+		layout = yield self.get_layout(graph)
+		self.write(graph_to_linkurious_json(graph, layout))
+		self.finish()
+
+	@tornado.concurrent.run_on_executor
+	def get_layout(self, graph):
+		return layoutCache.getLayout(graph)
 
 
 def initial_pos(graph):
@@ -165,6 +178,9 @@ def graph_to_linkurious_json(graph, layout, edges_omit_list=None):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)#, processes=4)
+    server = tornado.httpserver.HTTPServer(make_app())
+    server.bind(5000)
+    server.start(0)  # autodetect number of cores and fork a process for each
+    tornado.ioloop.IOLoop.current().start()
 
     

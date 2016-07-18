@@ -16,12 +16,12 @@ class ExistWrapper:
 
 	def letter(self, req, searchTerm=None):
 		if searchTerm:
-			print('calling with searchterm')
+			#print('calling with searchterm')
 			letter = self.run("letterPlusSearchTerm.xql?letter=" + str(req) + '&searchTerm=' + searchTerm)
-			print(letter)
+			#print(letter)
 			return letter
 		else:
-			print('calling without searchterm')
+			#print('calling without searchterm')
 			return self.run("letter.xql?letter=" + str(req))
 	def buildGraphML(self, eXistScript):
 		return self.run(eXistScript)
