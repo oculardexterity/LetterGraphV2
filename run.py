@@ -1,6 +1,5 @@
 from collections import OrderedDict
 from graph_tool.all import *
-#import hashlib
 import json
 import io
 import numpy
@@ -62,10 +61,6 @@ def make_app():
 class SinglePageAppHandler(tornado.web.RequestHandler):
 	def get(self):
 		self.render('testLinkurious.html')
-		
-
-
-
 
 # Get letter html from exist -- synchronous
 class LetterHandler(tornado.web.RequestHandler):
@@ -109,18 +104,20 @@ class GraphHandler(tornado.web.RequestHandler):
 				addGraph = graph_tool.load_graph(io.StringIO(addData), fmt='graphml')
 				graph = join_graphs(graph, addGraph)
 
-
-		
-
 		layout = yield self.get_layout(graph)
 		self.write(graph_to_linkurious_json(graph, layout))
 		self.finish()
 
+	# Layout wrapper function to run in some other thread
 	@tornado.concurrent.run_on_executor
 	def get_layout(self, graph):
 		return layoutCache.getLayout(graph)
 
 
+
+"""
+Bump off these functions into GraphUtils!!!
+"""
 def initial_pos(graph):
 	vprop = graph.new_vertex_property("vector<double>")
 	for n, v in enumerate(graph.vertices()):
