@@ -174,10 +174,15 @@ def graph_to_linkurious_json(graph, layout, edges_omit_list=None):
 	return json.dumps(json_graph)
 
 
+def main():
+	server = tornado.httpserver.HTTPServer(make_app())
+	server.bind(5000)
+	print("Tornado server started\nCPU count:", tornado.process.cpu_count())
+	server.start(0)  # autodetect number of cores and fork a process for each
+	tornado.ioloop.IOLoop.current().start()
+
+
 if __name__ == '__main__':
-    server = tornado.httpserver.HTTPServer(make_app())
-    server.bind(5000)
-    server.start(0)  # autodetect number of cores and fork a process for each
-    tornado.ioloop.IOLoop.current().start()
+    main()
 
     
