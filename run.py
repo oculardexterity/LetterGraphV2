@@ -165,6 +165,6 @@ def graph_to_linkurious_json(graph, layout, edges_omit_list=None):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True)#, processes=4)
 
     
