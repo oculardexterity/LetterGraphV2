@@ -1,13 +1,12 @@
-from collections import OrderedDict
+
 from graph_tool.all import *
-import json
 import io
 import numpy
 import time
 
 from config import Config
 from eXistWrapper.wrapper import ExistWrapper
-from GraphUtils import join_graphs
+import GraphUtils
 from LayoutCache import LayoutCache
 
 import jinja2
@@ -68,6 +67,7 @@ class LetterHandler(tornado.web.RequestHandler):
 	def get(self, letterId):
 		searchTerm = self.get_argument('searchTerm', default=None)
 		try:
+			print("searchterm:", searchTerm)
 			self.write(exist.letter(letterId, searchTerm))
 		except:
 			raise tornado.web.HTTPError(404)
@@ -90,22 +90,22 @@ class GraphHandler(tornado.web.RequestHandler):
 			if 'repo' in includes:
 				addData = exist.buildGraphML('repo' + '.xql')
 				addGraph = graph_tool.load_graph(io.StringIO(addData), fmt='graphml')
-				graph = join_graphs(graph, addGraph)
+				graph = GraphUtils.join_graphs(graph, addGraph)
 		
 		# Add in search terms
-		searchTerm = self.get_argument('searchTerm', default=None)
-		if searchTerm:
-			searchTerms = searchTerm.split('|')
+		searchString = self.get_argument('searchTerm', default=None)
+		if searchString:
+			searchTerms = searchString.split('|')
 			for st in searchTerms:
 				print(st)
 				addData = exist.buildGraphML('searchTerm.xql?searchString=' + st)
 				addGraph = graph_tool.load_graph(io.StringIO(addData), fmt='graphml')
-				graph = join_graphs(graph, addGraph)
+				graph = GraphUtils.join_graphs(graph, addGraph)
 
 		layout = yield executor.submit(self.get_layout, graph)
 
 		###########
-		self.write(graph_to_linkurious_json(graph, layout))
+		self.write(GraphUtils.graph_to_linkurious_json(graph, layout))
 		self.finish()
 
 	# Layout wrapper function to run in some other thread
@@ -117,60 +117,7 @@ class GraphHandler(tornado.web.RequestHandler):
 """
 Bump off these functions into GraphUtils!!!
 """
-def initial_pos(graph):
-	vprop = graph.new_vertex_property("vector<double>")
-	for n, v in enumerate(graph.vertices()):
-		vprop[v] = n, n
-	return vprop
 
-
-def build_vertices_list(graph, layout):
-	vertices = []
-	for v in graph.vertices():
-		vertex = {"id": graph.vp["_graphml_vertex_id"][v]}
-		try:
-			vertex["label"] = graph.vp["node_label"][v]
-		except KeyError:
-			pass
-		try:
-			vertex["color"] = graph.vp["color"][v]
-			vertex["originalColor"] = graph.vp["color"][v]
-			vertex["lighten_color"] = graph.vp["lighten_color"][v]
-		except KeyError:
-			pass
-
-		# Shape of node
-		vertex['size'] = 0.5
-		vertex["data"] = {
-						"type": graph.vp["type"][v],
-						 "title": graph.vp["title"][v],
-						 "label": graph.vp["node_label"][v],
-						}
-		try:
-			vertex["data"]["letterId"] = graph.vp["letterId"][v]
-			vertex["data"]["search_kwic"] = graph.vp["search_kwic"][v]
-		except KeyError:
-			pass
-		vertex["x"], vertex["y"] = layout[v]
-		vertices.append(vertex)
-	return vertices
-
-
-def build_edge_list(graph, edges_omit_list=None):
-	edges = []
-	for e in graph.edges():
-		edge = {"id": graph.edge_properties["_graphml_edge_id"][e]}
-		edge["source"], edge["target"] = graph.vp["_graphml_vertex_id"][e.source()], graph.vp["_graphml_vertex_id"][e.target()]
-		edge["type"] = 'arrow'
-		edges.append(edge)
-	return edges
-
-
-def graph_to_linkurious_json(graph, layout, edges_omit_list=None):
-	json_graph = OrderedDict()
-	json_graph['nodes'] = build_vertices_list(graph, layout)
-	json_graph['edges'] = build_edge_list(graph, edges_omit_list)
-	return json.dumps(json_graph)
 
 
 def main():

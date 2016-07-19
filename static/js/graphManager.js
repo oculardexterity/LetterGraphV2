@@ -305,10 +305,18 @@ var graphManager = (function(config) {
 		    $(".showLetterLink").click(function(e){
 			    e.preventDefault();
 			    var url = $(this).attr('href');
-			    
-			    /// THIS NEEDS TO BE A FUNCTION IN LETTERMANAGER!!!
-			    router.getData('letter/' + url, letter.showLetterContent);
+			    console.log(url);
+			    if (router.url.getVar('searchTerm')) {
+			    	urlST = url + '?searchTerm=' + router.url.getVar('searchTerm');
+			    	router.getData('letter/' + urlST, letter.showLetterContent);
+			    }
+			    else {
+			    	router.getData('letter/' + url, letter.showLetterContent);
+			    }
+			    console.log(url);
 			    router.url.setVar('letter', url);
+			    
+			    
 		    });
 		});
 

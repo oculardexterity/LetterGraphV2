@@ -147,6 +147,10 @@ body {
     font-weight: 300; }
   .letterContainer::-webkit-scrollbar {
     display: none; }
+  .letterContainer .searchHighlighted {
+    background-color: rgba(68, 143, 48, 0.7);
+    padding: 1px 2px 2px 2px;
+    border-radius: 3px; }
 
 .letter, .postcard {
   background-color: #FFF;
@@ -182,9 +186,6 @@ br.hyphen:before {
 span.sic:after {
   content: " [sic]";
   font-weight: bold; }
-
-span.searchHighlighted {
-  background-color: #448F30; }
 
 .sigma-tooltip {
   max-width: 240px;
@@ -273,6 +274,8 @@ span.searchHighlighted {
   padding: 5px;
   border-radius: 3px;
   font-size: 14px; }
+  .sigma-tooltip p.kwic:empty {
+    display: none; }
 
 .letterTT {
   background-color: rgba(102, 153, 153, 0.7); }

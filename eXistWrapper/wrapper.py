@@ -18,7 +18,7 @@ class ExistWrapper:
 		if searchTerm:
 			#print('calling with searchterm')
 			letter = self.run("letterPlusSearchTerm.xql?letter=" + str(req) + '&searchTerm=' + searchTerm)
-			#print(letter)
+			print(letter)
 			return letter
 		else:
 			#print('calling without searchterm')
