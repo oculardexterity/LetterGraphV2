@@ -34,7 +34,7 @@ initialGraph = graph_tool.load_graph(io.StringIO(graphData), fmt='graphml')
 layoutCache = LayoutCache('graph_data/')
 
 
-
+executor = tornado.concurrent.futures.ThreadPoolExecutor(8)
 
 
 
@@ -75,8 +75,6 @@ class LetterHandler(tornado.web.RequestHandler):
 
 
 class GraphHandler(tornado.web.RequestHandler):
-	executor = tornado.concurrent.futures.ThreadPoolExecutor(max_workers=8)
-
 	@tornado.gen.coroutine
 	def get(self):
 
@@ -104,12 +102,13 @@ class GraphHandler(tornado.web.RequestHandler):
 				addGraph = graph_tool.load_graph(io.StringIO(addData), fmt='graphml')
 				graph = join_graphs(graph, addGraph)
 
-		layout = yield self.get_layout(graph)
+		layout = yield executor.submit(self.get_layout, graph)
+
+		###########
 		self.write(graph_to_linkurious_json(graph, layout))
 		self.finish()
 
 	# Layout wrapper function to run in some other thread
-	@tornado.concurrent.run_on_executor
 	def get_layout(self, graph):
 		return layoutCache.getLayout(graph)
 
