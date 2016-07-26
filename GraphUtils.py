@@ -30,6 +30,7 @@ def join_graphs(main, sub):
 		
 		# Add node to graph if not already there
 		if sub.vp["_graphml_vertex_id"][sub_vertex] not in id_to_vertex_map:
+			print('adding new node:', sub.vp["_graphml_vertex_id"][sub_vertex])
 			main_vertex = main.add_vertex()
 
 			# Add vertex properties to map
@@ -42,9 +43,10 @@ def join_graphs(main, sub):
 		## This for some reason not being run...!
 		if sub.vp["_graphml_vertex_id"][sub_vertex] in id_to_vertex_map:
 			main_vertex = id_to_vertex_map[sub.vp["_graphml_vertex_id"][sub_vertex]]	
-
+			print('already node:', sub.vp["_graphml_vertex_id"][sub_vertex])
 			# Does a join of search_kwic rather than overwriting!
-			if 'search_kiwc' in sub.vp and sub.vp['search_kwic'][sub_vertex]:
+			if 'search_kwic' in sub.vp and sub.vp['search_kwic'][sub_vertex]:
+				print('kwic there', sub.vp["_graphml_vertex_id"][sub_vertex])
 				if main.vp['search_kwic'][main_vertex]:
 					main_kwic_str = main.vp['search_kwic'][main_vertex]
 				else:

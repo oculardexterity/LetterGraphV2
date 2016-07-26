@@ -90,6 +90,7 @@ class GraphHandler(tornado.web.RequestHandler):
 			if 'repo' in includes:
 				addData = exist.buildGraphML('repo' + '.xql')
 				addGraph = graph_tool.load_graph(io.StringIO(addData), fmt='graphml')
+				print('\n\n#####################\n JOINING REPO GRAPH\n#######################')
 				graph = GraphUtils.join_graphs(graph, addGraph)
 		
 		# Add in search terms
@@ -97,8 +98,8 @@ class GraphHandler(tornado.web.RequestHandler):
 		if searchString:
 			searchTerms = searchString.split('|')
 			for st in searchTerms:
-				print(st)
 				addData = exist.buildGraphML('searchTerm.xql?searchString=' + st)
+				print('\n\n#####################\n JOINING ST', st, 'GRAPH\n#######################')
 				addGraph = graph_tool.load_graph(io.StringIO(addData), fmt='graphml')
 				graph = GraphUtils.join_graphs(graph, addGraph)
 
