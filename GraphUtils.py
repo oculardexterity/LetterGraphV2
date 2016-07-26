@@ -106,6 +106,8 @@ def build_vertices_list(graph, layout):
 			pass
 
 		# Shape of node
+		
+
 		vertex['size'] = 0.5
 		vertex["data"] = {
 						"type": graph.vp["type"][v],

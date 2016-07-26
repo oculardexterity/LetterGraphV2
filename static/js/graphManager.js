@@ -45,8 +45,10 @@ var graphManager = (function(config) {
 			    minNodeSize: 5,
 			    maxNodeSize: 6,
 			    maxEdgeSize: 1,
+			    labelThreshold: 10,
 			   // nodeActiveLevel: 5,
 			    zoomMin: 0.01,
+			    shortLabelsOnHover: true
 
 			}
 	});
@@ -197,7 +199,7 @@ var graphManager = (function(config) {
 		
 
 		var g = JSON.parse(data);
-
+		console.log(g);
 
 		var nodeIds = getCurrentNodeIds();
 		//console.log(nodeIds);
