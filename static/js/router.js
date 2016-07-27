@@ -181,7 +181,26 @@ var routerModule = (function(graph, letter) {
 
 		function addToCacheAndDo(data) {
 			//console.log('addToCacheAndDo called');
-			localStorage[dataIdentifier] = data;
+			try {
+				localStorage[dataIdentifier] = data;
+			}
+			catch (e) 
+			{
+				console.log('localstorage full');
+				var localStorageKeys = [];
+
+
+
+				for (var key in localStorage) {
+					localStorageKeys.push(key);
+				}
+
+
+
+				var sorted_ktr = localStorageKeys.sort(function(x,y) {return y.length - x.length});
+				localStorage.removeItem(sorted_ktr[0]);
+				return addToCacheAndDo(data);
+			}
 			//console.log(data);
 			callback(data);
 		}
