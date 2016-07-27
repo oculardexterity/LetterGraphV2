@@ -3,7 +3,7 @@ String.prototype.contains = function(it) { return this.indexOf(it) != -1; };
 
 
 
-var routerModule = (function(graph, letter) {
+var routerModule = (function(graph, letter, panel) {
 	//var graph, letter;
 	
 	function initialise() {
@@ -50,6 +50,7 @@ var routerModule = (function(graph, letter) {
 			string = string.slice(0, -1);
 			//console.log('urlstring: ' + string);
 			history.pushState(string, '', string);
+			grabBrowserUrl();
 		}
 
 
@@ -64,8 +65,11 @@ var routerModule = (function(graph, letter) {
 		}
 
 		function setVar(vari, val) {
+			//console.log('router setVarcalled', vari, val);
 			urlVars[vari] = val;
+			//console.log('setvar post-set urlvars', urlVars);
 			setBrowserUrl();
+			//console.log('getvar function called inside router after setting', getVar('graphIncludes'));
 		}
 
 		function removeVar(vari) {
@@ -131,23 +135,24 @@ var routerModule = (function(graph, letter) {
 		
 	}
 
-	function getGraph(urlvars) {
+	function getGraph() {
 		var next_char = ""
 		// If graph=default or no graph var, draw default graph
-		if (urlvars['graph'] === 'default' || !('graph' in urlvars)) {
+		if (url.vars['graph'] === 'default' || !url.getVar('graph')) {
 			//console.log('pn loads default graph');
 			uri = 'defaultGraph?';
-			if ('graphIncludes' in urlvars) {
-				uri += next_char + 'graphIncludes=' + urlvars['graphIncludes'];
+			if (url.getVar('graphIncludes')) {
+				uri += next_char + 'graphIncludes=' + url.getVar('graphIncludes');
 				next_char = '&';
 			}
 			
 		}
 
-		if ('searchTerm' in url.vars) {
-			uri += next_char + 'searchTerm=' + urlvars['searchTerm'];
+		if (url.getVar('searchTerm')) {
+			uri += next_char + 'searchTerm=' + url.getVar('searchTerm');
 			next_char = '&';
 		}
+		console.log(uri);
 		getData(uri, graph.drawGraph);
 	}
 
@@ -171,7 +176,7 @@ var routerModule = (function(graph, letter) {
 		
 
 
-		getGraph(url.vars);
+		getGraph();
 		
 		
 		

@@ -203,7 +203,7 @@ var graphManager = (function(config) {
 
 		var nodeIds = getCurrentNodeIds();
 		//console.log(nodeIds);
-
+		console.log("nodes length", g.nodes.length);
 
 		// For some reason crashing on automatic import -- add manually
 		for (var i = 0, j = g.nodes.length; i < j; i++) {
@@ -211,12 +211,14 @@ var graphManager = (function(config) {
 			if (sigmaWebgl.graph.nodes(g.nodes[i].id)) {
 				
 				var existingNode = sigmaWebgl.graph.nodes(g.nodes[i].id);
+				//console.log(existingNode);
 				existingNode.x = g.nodes[i].x;
 				existingNode.y = g.nodes[i].y;
 
 				// Here going to have to add in additional info:: to wit, search Kwic
 			}
 			else {
+				//console.log(g.nodes[i]);
 				sigmaWebgl.graph.addNode(g.nodes[i]);
 			}
 

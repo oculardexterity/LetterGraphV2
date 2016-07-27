@@ -2,7 +2,7 @@
 
 
 // true reloads data
-var testingOverride = true;
+var testingOverride = false;
 
 
 
@@ -48,11 +48,11 @@ $(document).ready(function() {
 		initialGraph: 'defaultGraph'
 	});
 
-	
-	router = routerModule(graph, letter);
+	panel = panelManager();
+	router = routerModule(graph, letter, panel);
 	router.initialise();
 
-	panel = panelManager(router);
+	
 
 
 	
