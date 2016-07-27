@@ -35,7 +35,7 @@ body {
   user-select: none;
   text-shadow: 10px 0px 18px rgba(255, 255, 255, 0.63); }
 
-.console {
+.panel {
   transition: height 0.2s ease-out;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -54,17 +54,17 @@ body {
   background-color: rgba(255, 255, 255, 0.95);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   border-radius: 3px; }
-  .console #showConsole {
+  .panel #showPanel {
     text-decoration: none;
     position: relative;
     color: #000; }
-    .console #showConsole:before {
+    .panel #showPanel:before {
       content: ' \25BC';
       padding-right: 20px;
       position: relative; }
-  .console.show {
+  .panel.show {
     height: 400px; }
-    .console.show #showConsole:before {
+    .panel.show #showPanel:before {
       content: ' \25B2'; }
 
 #graphContainer {

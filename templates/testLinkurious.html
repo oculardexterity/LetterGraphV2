@@ -33,6 +33,7 @@
     <script src="/static/js/main.js"></script>
     <script src="/static/js/graphManager.js"></script>
     <script src="/static/js/letterManager.js"></script>
+    <script src="/static/js/panelManager.js"></script>
     <script src="/static/js/router.js"></script>
     
 
@@ -57,11 +58,14 @@
 
 <div class="masthead">The <em>Correspondence</em> of 1916</div>
 
-<div class="console">
-  <div><a id="showConsole"></a>Console</div>
+<div class="panel">
+  <div><a id="showPanel"></a>Console</div>
 
   <div>
-    <h3>Do some stuff to the graph</h3>
+    <h4>Include in graph</h4>
+    <p><input id="graphIncludeRepo" type="checkbox" name="repo" value="repo"> Repository</p>
+
+    <p><button id="graphIncludeSubmit">Rebuild graph</button></p>
   </div>
 
 

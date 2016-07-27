@@ -52,12 +52,10 @@ $(document).ready(function() {
 	router = routerModule(graph, letter);
 	router.initialise();
 
-	/// DOES this query need to be pushed into some graphManager func?
+	panel = panelManager(router);
 
 
-	$('#showConsole').click(function() {
-		$('.console').toggleClass('show');
-	});
+	
       
 });
 

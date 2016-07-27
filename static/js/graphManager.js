@@ -210,7 +210,7 @@ var graphManager = (function(config) {
 			
 			if (sigmaWebgl.graph.nodes(g.nodes[i].id)) {
 				
-				var existingNode = sigmaWebgl.graph.nodes(g.vertices[i].id);
+				var existingNode = sigmaWebgl.graph.nodes(g.nodes[i].id);
 				existingNode.x = g.nodes[i].x;
 				existingNode.y = g.nodes[i].y;
 

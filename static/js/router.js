@@ -108,6 +108,49 @@ var routerModule = (function(graph, letter) {
 
 		Change this completely--- use query string variables and parsing function above... obvidently.
 	*/
+
+	function getLetter(urlvars) {
+
+		//////ABSTRACT OUT THE MECHANICS OF DOING IT TO A CALLABLE FUNCTION --- i.e.
+		/// LETTER VALUE can be passed in, or not...
+
+		if ('letter' in urlvars && Number(urlvars['letter'])) {
+			if ('searchTerm' in urlvars) {
+				var urlToGet = 'letter/' + urlvars['letter'] + '?searchTerm=' + urlvars['searchTerm']
+				//console.log('searchterm for letter call: ' + urlToGet);
+				getData(urlToGet, letter.showLetterContent);
+				
+			}
+			else {
+				getData('letter/' + urlvars['letter'], letter.showLetterContent);
+			}
+		}
+		else {
+			letter.closeLetter();
+		}
+		
+	}
+
+	function getGraph(urlvars) {
+		var next_char = ""
+		// If graph=default or no graph var, draw default graph
+		if (urlvars['graph'] === 'default' || !('graph' in urlvars)) {
+			//console.log('pn loads default graph');
+			uri = 'defaultGraph?';
+			if ('graphIncludes' in urlvars) {
+				uri += next_char + 'graphIncludes=' + urlvars['graphIncludes'];
+				next_char = '&';
+			}
+			
+		}
+
+		if ('searchTerm' in url.vars) {
+			uri += next_char + 'searchTerm=' + urlvars['searchTerm'];
+			next_char = '&';
+		}
+		getData(uri, graph.drawGraph);
+	}
+
 	function callFromUrl() {
 		// must be set each time function is called, for obvious reasons
 		
@@ -121,51 +164,15 @@ var routerModule = (function(graph, letter) {
 
 		// Checks letter is set, and is a number (loads letter first)
 		
-		function getLetter(urlvars) {
-
-			//////ABSTRACT OUT THE MECHANICS OF DOING IT TO A CALLABLE FUNCTION --- i.e.
-			/// LETTER VALUE can be passed in, or not...
-
-			if ('letter' in urlvars && Number(urlvars['letter'])) {
-				if ('searchTerm' in urlvars) {
-					var urlToGet = 'letter/' + urlvars['letter'] + '?searchTerm=' + urlvars['searchTerm']
-					//console.log('searchterm for letter call: ' + urlToGet);
-					getData(urlToGet, letter.showLetterContent);
-					
-				}
-				else {
-					getData('letter/' + urlvars['letter'], letter.showLetterContent);
-				}
-			}
-			else {
-				letter.closeLetter();
-			}
-			
-		}
+		
 		getLetter(url.vars);
 
 		//graph.setCamera();
 		
 
 
-	
-		var next_char = ""
-		// If graph=default or no graph var, draw default graph
-		if (url.vars['graph'] === 'default' || !('graph' in url.vars)) {
-			//console.log('pn loads default graph');
-			uri = 'defaultGraph?';
-			if ('graphIncludes' in url.vars) {
-				uri += next_char + 'graphIncludes=' + url.vars['graphIncludes'];
-				next_char = '&';
-			}
-			
-		}
-
-		if ('searchTerm' in url.vars) {
-			uri += next_char + 'searchTerm=' + url.vars['searchTerm'];
-			next_char = '&';
-		}
-		getData(uri, graph.drawGraph);
+		getGraph(url.vars);
+		
 		
 		
 
@@ -232,6 +239,7 @@ var routerModule = (function(graph, letter) {
 		url: url,
 		getData: getData,
 		initialise: initialise,
-		callFromUrl: callFromUrl
+		callFromUrl: callFromUrl,
+		getGraph: getGraph
 	}
 });
