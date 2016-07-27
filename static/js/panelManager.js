@@ -1,5 +1,12 @@
 var panelManager = (function() {
 	var panel = $('.panel');
+	var repoIncludedCheckbox = $('#graphIncludeRepo');
+
+	// Setup from URL:
+
+	if (router.url.getVar('graphIncludes')=='repo') {
+		repoIncludedCheckbox.prop('checked', true);
+	}
 	
 
 	$('#showPanel').click(function() {

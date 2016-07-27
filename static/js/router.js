@@ -3,7 +3,7 @@ String.prototype.contains = function(it) { return this.indexOf(it) != -1; };
 
 
 
-var routerModule = (function(graph, letter, panel) {
+var routerModule = (function(graph, letter) {
 	//var graph, letter;
 	
 	function initialise() {

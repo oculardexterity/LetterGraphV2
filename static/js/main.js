@@ -48,10 +48,10 @@ $(document).ready(function() {
 		initialGraph: 'defaultGraph'
 	});
 
-	panel = panelManager();
-	router = routerModule(graph, letter, panel);
+	
+	router = routerModule(graph, letter);
 	router.initialise();
-
+	panel = panelManager();
 	
 
 
