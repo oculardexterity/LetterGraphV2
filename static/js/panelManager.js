@@ -13,9 +13,10 @@ var panelManager = (function() {
 		var searchTerms = router.url.getVar('searchTerm').split('|');
 		var searchBoxesString = '';
 		for (var i in searchTerms) {
-			searchBoxesString += '<input type="text" name="searchTerm" class="searchTermInput" value="'+searchTerms[i]+'"/>'
+			searchBoxesString += '<p><input type="text" name="searchTerm" class="searchTermInput" value="'+searchTerms[i]+'"/> <button class="removeSearchField">-</button></p>'
 		}
 		$('#searchFields').html(searchBoxesString);
+		bindRemoveButtonListener();
 	}
 	
 
@@ -23,6 +24,16 @@ var panelManager = (function() {
 		panel.toggleClass('show');
 	});
 
+	$('#searchTermAdd').click(function() {
+		$('#searchFields').append('<p><input type="text" name="searchTerm" class="searchTermInput"/> <button class="removeSearchField">-</button></p>')
+		bindRemoveButtonListener();
+	});
+
+	function bindRemoveButtonListener() {
+		$('.removeSearchField').click(function(){
+			$(this).parent('p').remove();
+		});
+	}
 
 	$('#graphIncludeSubmit').click(function() {
 		//console.log(router);
@@ -45,7 +56,9 @@ var panelManager = (function() {
 		var searchFields = $('.searchTermInput');
 		var searchTermsString = '';
 		searchFields.each(function(field) {
-			searchTermsString += $(this).val() + '|';
+			if ($(this).val() != '') {
+				searchTermsString += $(this).val() + '|';
+			}
 		});
 		searchTermsString = searchTermsString.slice(0, -1);
 
