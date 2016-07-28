@@ -81,7 +81,7 @@ var letterManager = (function(config) {
 		});
 
 		$('#graphContainer').addClass('blur');
-		$('#panel').addClass('blur');
+		$('.panel').addClass('blur');
 		$('.letterContainer').removeClass('blur');
 
 		// To initially run the function:
@@ -94,7 +94,7 @@ var letterManager = (function(config) {
 		$(config['closeLetterDiv']).hide();
 		$(config['container']).hide();
 		$('#graphContainer').removeClass('blur');
-		$('#panel').removeClass('blur');
+		$('.panel').removeClass('blur');
 		$('.letterContainer').addClass('blur');
 		$('.console').show();
 		router.url.removeVar('letter');

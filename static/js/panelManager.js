@@ -61,12 +61,47 @@ var panelManager = (function() {
 			}
 		});
 		searchTermsString = searchTermsString.slice(0, -1);
-
-		router.url.setVar('searchTerm', searchTermsString);
+		if (searchTermsString == '') {
+			router.url.removeVar('searchTerm');
+		}
+		else {
+			router.url.setVar('searchTerm', searchTermsString);
+		}
 		router.getGraph();
 
 
 	});
+
+	var cmdPressed;
+	$(document).keydown(function(e) {
+			 	
+	 	//console.log(e);
+      if (e.which == 91 || e.metaKey || e.ctrlKey || e.metaKey) {
+      	//console.log('pressed');
+      	cmdPressed = true;
+      	console.log(cmdPressed);
+      }
+
+
+	});
+
+	$(document).keyup(function(e) {
+	 	  cmdPressed = false;
+	 	//console.log(isPressed);
+	});
+
+	$(document).keydown(function(e){
+		if (cmdPressed && e.key == 'e') {
+			panel.toggleClass('show');
+		}
+	});
+
+
+
+
+
+
+
 
 	return {
 		

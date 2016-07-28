@@ -215,6 +215,10 @@ var graphManager = (function(config) {
 				existingNode.x = g.nodes[i].x;
 				existingNode.y = g.nodes[i].y;
 
+				if ('search_kwic' in g.nodes[i].data) {
+					existingNode.data.search_kwic = g.nodes[i].data.search_kwic;
+				}
+
 				// Here going to have to add in additional info:: to wit, search Kwic
 			}
 			else {

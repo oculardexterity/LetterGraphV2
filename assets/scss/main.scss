@@ -41,6 +41,26 @@ body {
 }
 
 .panel {
+    .header {
+      color: rgb(150,150,150);
+      font-variant: small-caps;
+      letter-spacing: 2px;
+      font-size: 18px;
+      position: relative;
+      top: -4px;
+      font-weight:900;
+      text-shadow: 0px 0px 2px rgba(150, 150, 150, 0.3);
+    }
+
+    h4 {
+      color: #666;
+      font-variant: small-caps;
+      letter-spacing: 2px;
+      //font-size: 18px;
+      
+    }
+
+
     transition: height 0.2s ease-out;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -65,20 +85,35 @@ body {
     #showPanel{
         text-decoration: none;
         position: relative;
-        color: #000;
+        color: #666;
+        &:hover {
+          color: #999;
+        }
         &:before {
+            text-shadow: 0px 0px 1px rgba(200, 200, 200, 0.2);
             content: ' \25BC';
             padding-right:20px;
             position: relative;
+            top: 2px;
+            cursor: pointer;
 
         }
     }
     &.show {
+        .header {
+          top:-5px;
+        }
         height: 400px;
         #showPanel:before {
             content: ' \25B2';
-
+            top:2px;
         }
+    }
+
+
+
+    .panelSection {
+      border-bottom: thin solid #CCC;
     }
 }
 

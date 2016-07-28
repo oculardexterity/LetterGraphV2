@@ -59,21 +59,21 @@
 <div class="masthead">The <em>Correspondence</em> of 1916</div>
 
 <div class="panel">
-  <div><a id="showPanel"></a>Console</div>
+  <div class="header"><a id="showPanel"></a>console</div>
 
-  <div>
-    <h4>Include in graph</h4>
+  <div class="panelSection">
+    <h4>include in graph</h4>
 
     <p><input id="graphIncludeRepo" type="checkbox" name="repo" value="repo"/> Repository</p>
 
-    <p><button id="graphIncludeSubmit">Rebuild graph</button></p>
+    <p><button id="graphIncludeSubmit">Build Graph with Selected Includes</button></p>
   </div>
 
-  <div>
-    <h4>Search terms</h4>
+  <div class="panelSection">
+    <h4>search terms</h4>
     <div id="searchFields"></div>
-    <p><button id="searchTermAdd">+</button></p>
-    <p><button id="searchTermSubmit">Build Graph With Search Terms</button></p>
+    <p><button id="searchTermAdd">+</button> Add a search string</p>
+    <p><button id="searchTermSubmit">Build Graph with Search Terms</button></p>
   </div>
 
 
