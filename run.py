@@ -22,7 +22,7 @@ import tornado.web
 from tornado_jinja2 import Jinja2Loader
 
 
-
+from memory_profiler import profile
 
 
 numpy.random.seed(42)
@@ -76,6 +76,7 @@ class LetterHandler(tornado.web.RequestHandler):
 
 
 class GraphHandler(tornado.web.RequestHandler):
+	@profile
 	@tornado.gen.coroutine
 	def get(self):
 
@@ -111,6 +112,7 @@ class GraphHandler(tornado.web.RequestHandler):
 		self.finish()
 
 	# Layout wrapper function to run in some other thread
+
 	def get_layout(self, graph):
 		return layoutCache.getLayout(graph)
 
