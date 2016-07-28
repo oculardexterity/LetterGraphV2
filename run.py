@@ -2,6 +2,7 @@
 from graph_tool.all import *
 import io
 import numpy
+import os
 import time
 
 from config import Config
@@ -127,6 +128,7 @@ def main():
 	print("Tornado server started\nCPU count:", tornado.process.cpu_count())
 	server.start(0)  # autodetect number of cores and fork a process for each
 	tornado.ioloop.IOLoop.current().start()
+	print(os.getpid())
 
 
 if __name__ == '__main__':
