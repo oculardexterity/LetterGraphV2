@@ -230,7 +230,7 @@ var routerModule = (function(graph, letter) {
 
 			// IF graph is part of request...
 			
-				$('#builtGraphsContainer').append('<div class="graphLoadingIcon">LOADING</div>');
+				$('#builtGraphsContainer').append('<div data-identifier="'+dataIdentifier+'" class="graphLoadingIcon">LOADING</div>');
 			
 			//console.log('Data ajaxed in');
 			//console.log("http://localhost:5000/ajax/" + dataIdentifier);
