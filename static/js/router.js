@@ -193,6 +193,9 @@ var routerModule = (function(graph, letter) {
 
 		function addToCacheAndDo(data) {
 			//console.log('addToCacheAndDo called');
+			$('.graphLoadingIcon').html('LOADED');
+
+
 			try {
 				localStorage[dataIdentifier] = data;
 			}
@@ -208,13 +211,14 @@ var routerModule = (function(graph, letter) {
 				}
 
 
-
 				var sorted_ktr = localStorageKeys.sort(function(x,y) {return y.length - x.length});
 				localStorage.removeItem(sorted_ktr[0]);
 				return addToCacheAndDo(data);
 			}
 			//console.log(data);
 			callback(data);
+
+
 		}
 
 		if (dataIdentifier in localStorage && !testingOverride) {
@@ -223,6 +227,11 @@ var routerModule = (function(graph, letter) {
 			callback(localStorage[dataIdentifier]);
 		}
 		else {
+
+			// IF graph is part of request...
+			
+				$('#builtGraphsContainer').append('<div class="graphLoadingIcon">LOADING</div>');
+			
 			//console.log('Data ajaxed in');
 			//console.log("http://localhost:5000/ajax/" + dataIdentifier);
 			$.ajax({
